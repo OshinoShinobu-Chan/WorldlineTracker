@@ -1,6 +1,7 @@
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Modding;
+using WorldlineTracker.WorldlineTrackerCode.Patches;
 
 namespace WorldlineTracker.WorldlineTrackerCode;
 
@@ -14,8 +15,41 @@ public partial class MainFile : Node
 
     public static void Initialize()
     {
+        Logger.Info("WorldlineTracker mod initializing...");
+
+        // 启用Harmony调试日志
+        Harmony.DEBUG = true;
+
         Harmony harmony = new(ModId);
 
-        harmony.PatchAll();
+        // 应用所有补丁
+        ApplyPatches(harmony);
+
+        Logger.Info("WorldlineTracker mod initialized successfully");
+    }
+
+    private static void ApplyPatches(Harmony harmony)
+    {
+        try
+        {
+            Logger.Info("Applying Harmony patches...");
+
+            // 应用卡牌相关补丁
+            new CardPatches().Apply(harmony);
+
+            // 应用战斗相关补丁
+            new CombatPatches().Apply(harmony);
+
+            // 后续添加其他补丁：
+            // new PotionPatches().Apply(harmony);
+            // new RelicPatches().Apply(harmony);
+
+            Logger.Info("Harmony patches applied successfully");
+        }
+        catch (System.Exception ex)
+        {
+            Logger.Error($"Failed to apply patches: {ex.Message}");
+            throw;
+        }
     }
 }
