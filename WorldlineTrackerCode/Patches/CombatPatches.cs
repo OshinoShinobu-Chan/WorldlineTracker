@@ -21,72 +21,72 @@ namespace WorldlineTracker.WorldlineTrackerCode.Patches
                 // 补丁 CombatManager 的开始战斗方法
                 var combatManagerType = typeof(CombatManager);
                 
-                // 尝试查找开始战斗的方法
-                var startCombatMethod = combatManagerType.GetMethod("StartCombat", 
+                // 补丁 AfterCombatRoomLoaded 方法（战斗开始）
+                var afterCombatRoomLoadedMethod = combatManagerType.GetMethod("AfterCombatRoomLoaded", 
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
                 
-                if (startCombatMethod != null)
+                if (afterCombatRoomLoadedMethod != null)
                 {
-                    var postfix = new HarmonyMethod(typeof(CombatPatches).GetMethod("StartCombatPostfix", 
+                    var postfix = new HarmonyMethod(typeof(CombatPatches).GetMethod("AfterCombatRoomLoadedPostfix", 
                         BindingFlags.NonPublic | BindingFlags.Static));
                     
-                    harmony.Patch(startCombatMethod, postfix: postfix);
-                    LogInfo($"Patched CombatManager.StartCombat successfully");
+                    harmony.Patch(afterCombatRoomLoadedMethod, postfix: postfix);
+                    LogInfo($"Patched CombatManager.AfterCombatRoomLoaded successfully");
                 }
                 else
                 {
-                    LogWarning("Could not find CombatManager.StartCombat method");
+                    LogWarning("Could not find CombatManager.AfterCombatRoomLoaded method");
                 }
 
-                // 尝试查找结束战斗的方法
-                var endCombatMethod = combatManagerType.GetMethod("EndCombat", 
+                // 补丁 EndCombatInternal 方法（战斗结束）
+                var endCombatInternalMethod = combatManagerType.GetMethod("EndCombatInternal", 
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
                 
-                if (endCombatMethod != null)
+                if (endCombatInternalMethod != null)
                 {
-                    var postfix = new HarmonyMethod(typeof(CombatPatches).GetMethod("EndCombatPostfix", 
+                    var prefix = new HarmonyMethod(typeof(CombatPatches).GetMethod("EndCombatInternalPrefix", 
                         BindingFlags.NonPublic | BindingFlags.Static));
                     
-                    harmony.Patch(endCombatMethod, postfix: postfix);
-                    LogInfo($"Patched CombatManager.EndCombat successfully");
+                    harmony.Patch(endCombatInternalMethod, prefix: prefix);
+                    LogInfo($"Patched CombatManager.EndCombatInternal successfully");
                 }
                 else
                 {
-                    LogWarning("Could not find CombatManager.EndCombat method");
+                    LogWarning("Could not find CombatManager.EndCombatInternal method");
                 }
 
-                // 尝试补丁回合相关方法
-                var endPlayerTurnMethod = combatManagerType.GetMethod("EndPlayerTurn", 
+                // 补丁 EndPlayerTurnPhaseOneInternal 方法（结束玩家回合阶段一）
+                var endPlayerTurnPhaseOneMethod = combatManagerType.GetMethod("EndPlayerTurnPhaseOneInternal", 
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
                 
-                if (endPlayerTurnMethod != null)
+                if (endPlayerTurnPhaseOneMethod != null)
                 {
-                    var postfix = new HarmonyMethod(typeof(CombatPatches).GetMethod("EndPlayerTurnPostfix", 
+                    var postfix = new HarmonyMethod(typeof(CombatPatches).GetMethod("EndPlayerTurnPhaseOnePostfix", 
                         BindingFlags.NonPublic | BindingFlags.Static));
                     
-                    harmony.Patch(endPlayerTurnMethod, postfix: postfix);
-                    LogInfo($"Patched CombatManager.EndPlayerTurn successfully");
+                    harmony.Patch(endPlayerTurnPhaseOneMethod, postfix: postfix);
+                    LogInfo($"Patched CombatManager.EndPlayerTurnPhaseOneInternal successfully");
                 }
                 else
                 {
-                    LogWarning("Could not find CombatManager.EndPlayerTurn method");
+                    LogWarning("Could not find CombatManager.EndPlayerTurnPhaseOneInternal method");
                 }
 
-                // 尝试补丁开始敌人回合方法
-                var beginEnemyTurnMethod = combatManagerType.GetMethod("BeginEnemyTurn", 
+                // 补丁 EndPlayerTurnPhaseTwoInternal 方法（结束玩家回合阶段二，开始敌人回合）
+                var endPlayerTurnPhaseTwoMethod = combatManagerType.GetMethod("EndPlayerTurnPhaseTwoInternal", 
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
                 
-                if (beginEnemyTurnMethod != null)
+                if (endPlayerTurnPhaseTwoMethod != null)
                 {
-                    var postfix = new HarmonyMethod(typeof(CombatPatches).GetMethod("BeginEnemyTurnPostfix", 
+                    var postfix = new HarmonyMethod(typeof(CombatPatches).GetMethod("EndPlayerTurnPhaseTwoPostfix", 
                         BindingFlags.NonPublic | BindingFlags.Static));
                     
-                    harmony.Patch(beginEnemyTurnMethod, postfix: postfix);
-                    LogInfo($"Patched CombatManager.BeginEnemyTurn successfully");
+                    harmony.Patch(endPlayerTurnPhaseTwoMethod, postfix: postfix);
+                    LogInfo($"Patched CombatManager.EndPlayerTurnPhaseTwoInternal successfully");
                 }
                 else
                 {
-                    LogWarning("Could not find CombatManager.BeginEnemyTurn method");
+                    LogWarning("Could not find CombatManager.EndPlayerTurnPhaseTwoInternal method");
                 }
 
                 LogInfo("Combat patches applied successfully");
@@ -100,11 +100,11 @@ namespace WorldlineTracker.WorldlineTrackerCode.Patches
 
         #region 战斗开始/结束补丁
 
-        private static void StartCombatPostfix(CombatRoom room)
+        private static void AfterCombatRoomLoadedPostfix()
         {
             try
             {
-                LogInfo($"Combat started in room");
+                LogInfo($"Combat started (AfterCombatRoomLoaded)");
                 
                 // 开始记录战斗
                 BattleRecorder.Instance.StartRecording();
@@ -114,22 +114,22 @@ namespace WorldlineTracker.WorldlineTrackerCode.Patches
             }
             catch (Exception ex)
             {
-                LogError($"Error in StartCombatPostfix: {ex.Message}");
+                LogError($"Error in AfterCombatRoomLoadedPostfix: {ex.Message}");
             }
         }
 
-        private static void EndCombatPostfix(CombatRoom room)
+        private static void EndCombatInternalPrefix()
         {
             try
             {
-                LogInfo($"Combat ended in room");
+                LogInfo($"Combat ending (EndCombatInternal)");
                 
                 // 停止记录战斗
                 BattleRecorder.Instance.StopRecording();
             }
             catch (Exception ex)
             {
-                LogError($"Error in EndCombatPostfix: {ex.Message}");
+                LogError($"Error in EndCombatInternalPrefix: {ex.Message}");
             }
         }
 
@@ -137,36 +137,36 @@ namespace WorldlineTracker.WorldlineTrackerCode.Patches
 
         #region 回合管理补丁
 
-        private static void EndPlayerTurnPostfix()
+        private static void EndPlayerTurnPhaseOnePostfix()
         {
             try
             {
-                LogInfo("Player turn ended");
+                LogInfo("Player turn phase one ended (准备进入敌人回合)");
                 
                 // 记录玩家回合结束
                 BattleRecorder.Instance.RecordTurnEnd("Player");
+            }
+            catch (Exception ex)
+            {
+                LogError($"Error in EndPlayerTurnPhaseOnePostfix: {ex.Message}");
+            }
+        }
+
+        private static void EndPlayerTurnPhaseTwoPostfix()
+        {
+            try
+            {
+                LogInfo("Player turn phase two ended (开始敌人回合)");
+                
+                // 记录敌人回合开始
+                BattleRecorder.Instance.RecordTurnStart("Enemy");
                 
                 // 进入下一回合
                 BattleRecorder.Instance.NextTurn();
             }
             catch (Exception ex)
             {
-                LogError($"Error in EndPlayerTurnPostfix: {ex.Message}");
-            }
-        }
-
-        private static void BeginEnemyTurnPostfix()
-        {
-            try
-            {
-                LogInfo("Enemy turn started");
-                
-                // 记录敌人回合开始
-                BattleRecorder.Instance.RecordTurnStart("Enemy");
-            }
-            catch (Exception ex)
-            {
-                LogError($"Error in BeginEnemyTurnPostfix: {ex.Message}");
+                LogError($"Error in EndPlayerTurnPhaseTwoPostfix: {ex.Message}");
             }
         }
 

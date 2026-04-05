@@ -68,12 +68,12 @@ public class BattleRecorder {
 #### 2.1 Harmony补丁注入
 需要hook的游戏事件：
 - [x] `Card.Play()` - 卡牌使用（已实现）
-- [ ] `Potion.Use()` - 药水使用
-- [ ] `Relic.OnUse()` - 遗物主动使用
-- [ ] `Relic.OnTrigger()` - 遗物被动触发
+- [x] `Potion.Use()` - 药水使用（已实现 - PotionPatches.cs）
+- [ ] `Relic.OnUse()` - 遗物主动使用（待实现）
+- [x] `Relic.OnTrigger()` - 遗物被动触发（已实现 - RelicPatches.cs）
 - [x] `CombatManager.EndTurn()` - 结束回合（已实现）
 - [x] `CombatManager.StartTurn()` - 开始回合（已实现）
-- [ ] `Enemy.TakeAction()` - 敌人动作
+- [x] `Enemy.TakeAction()` - 敌人动作（已实现 - EnemyPatches.cs）
 
 #### 2.2 数据收集模块 (`GameEventCollector.cs`)
 ```csharp
@@ -169,6 +169,9 @@ public class SLChecker {
 - ✅ **战斗记录管理器** - BattleRecorder.cs实现单例模式，支持JSON序列化
 - ✅ **卡牌使用事件监听** - CardPatches.cs成功hook卡牌播放事件
 - ✅ **战斗开始/结束监听** - CombatPatches.cs自动记录战斗生命周期
+- ✅ **药水使用事件监听** - PotionPatches.cs成功hook药水使用事件
+- ✅ **遗物触发事件监听** - RelicPatches.cs成功hook遗物被动触发事件
+- ✅ **敌人动作事件监听** - EnemyPatches.cs成功hook敌人动作事件
 - ✅ **JSON文件保存** - 支持自动保存战斗记录到文件
 - ✅ **项目配置** - 所有依赖项和构建配置已完成
 
@@ -245,11 +248,11 @@ WorldlineTracker/
 4. [x] 战斗开始/结束监听（CombatPatches.cs）
 5. [x] JSON文件保存（BattleRecorder.cs）
 6. [ ] 基础UI框架（ActionHistoryUI.cs）
-7. [ ] 药水使用事件监听（PotionPatches.cs）
-8. [ ] 遗物触发事件监听（RelicPatches.cs）
+7. [x] 药水使用事件监听（PotionPatches.cs）
+8. [x] 遗物触发事件监听（RelicPatches.cs）
 
 ### 中优先级（增强功能）
-9. [ ] 敌人动作事件监听（EnemyPatches.cs）
+9. [x] 敌人动作事件监听（EnemyPatches.cs）
 10. [ ] 树形历史UI（支持节点+连线）
 11. [ ] 节点交互功能（点击查看、拖动排列）
 12. [ ] SL检测机制（SLChecker.cs）
@@ -454,7 +457,7 @@ private string GetBattleDirectory()
 ---
 
 **最后更新**: 2026-04-05  
-**状态**: 开发中（计划1.1进行中）  
-**当前阶段**: 完善现有代码  
-**下一步任务**: 修复BattleRecorder路径问题，实现PotionPatches  
+**状态**: 开发中（计划2.1完成，进入下一阶段）  
+**当前阶段**: 游戏事件监听已完成，准备UI开发  
+**下一步任务**: 实现基础UI框架（ActionHistoryUI.cs），完善遗物主动使用监听  
 **负责人**: CrimmyP

@@ -40,9 +40,14 @@ public partial class MainFile : Node
             // 应用战斗相关补丁
             new CombatPatches().Apply(harmony);
 
-            // 后续添加其他补丁：
-            // new PotionPatches().Apply(harmony);
-            // new RelicPatches().Apply(harmony);
+            // 应用药水相关补丁
+            new PotionPatches().Apply(harmony);
+
+            // 应用遗物相关补丁
+            new RelicPatches().Apply(harmony);
+
+            // 应用敌人动作相关补丁
+            new EnemyPatches().Apply(harmony);
 
             Logger.Info("Harmony patches applied successfully");
         }

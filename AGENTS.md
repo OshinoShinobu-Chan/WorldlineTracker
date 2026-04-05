@@ -23,9 +23,27 @@
 2. 完成功能后更新README.md中的进度
 3. 每个功能完成后运行相关测试
 4. 每次完成重要修改后，先询问用户的审查意见，然后给用户提供`git commit`命令，由用户来执行。询问用户的审查意见的时候，请你使用question工具。
+5. 完成一个功能之后，请将成功构建的模组文件替换到以下的模组路径中"E:\SteamLibrary\steamapps\common\Slay the Spire 2\mods\WorldlineTracker\"，并给出调试建议。
+6. 当用户要求你检查游戏输出的日志时，请你去以下的路径中"C:\Users\crimm\AppData\Roaming\SlayTheSpire2\logs"查找最新的日志文件。
 
 ### 环境配置
 1. 项目在Windows环境下开发，使用PowerShell而不是bash。注意PowerShell命令语法与bash的区别
+2. Windows PowerShell命令差异：
+   - 不支持Linux命令如`head`、`tail`、`grep`
+   - 使用PowerShell等效命令：`select -First N`替代`head -N`，`select -Last N`替代`tail -N`，`findstr`替代`grep`
+3. dotnet构建命令：
+   - 当目录有多个项目文件时，必须指定具体项目：`dotnet build WorldlineTracker.csproj`
+   - 避免使用`dotnet build`（无参数），除非目录只有一个项目文件
+4. API引用验证：
+   - 反编译代码中的属性名可能与直觉不同，必须验证实际实现
+   - 示例：`monster.Title.ToString()`而非`monster.Name`，`move?.Id?.ToString()`而非`move?.Id?.Entry`
+5. 路径处理：
+   - Windows使用反斜杠`\`，但在C#代码中应使用`Path.Combine()`进行路径拼接
+   - 或统一使用正斜杠`/`确保跨平台兼容性
+6. 错误信息分析：
+   - CS1061错误："未包含...的定义"表示属性或方法不存在
+   - 需要检查：正确的命名空间引用、实际存在的属性/方法名、类型转换是否正确
+   - 编译失败时优先解决CS1061错误
 
 ## 项目特定偏好
 

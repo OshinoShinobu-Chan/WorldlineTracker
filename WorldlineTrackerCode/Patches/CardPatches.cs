@@ -26,7 +26,7 @@ namespace WorldlineTracker.WorldlineTrackerCode.Patches
                 // 补丁 CardModel.OnPlayWrapper 方法
                 var cardModelType = typeof(CardModel);
                 var onPlayWrapperMethod = cardModelType.GetMethod("OnPlayWrapper", 
-                    BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
                 
                 if (onPlayWrapperMethod != null)
                 {
@@ -74,14 +74,25 @@ namespace WorldlineTracker.WorldlineTrackerCode.Patches
 
         #region CardModel.OnPlayWrapper 补丁
 
-        private static void OnPlayWrapperPrefix(CardModel __instance, Creature? target)
+        private static void OnPlayWrapperPrefix(CardModel __instance, 
+            object choiceContext, 
+            object? target, 
+            bool isAutoPlay, 
+            object resources, 
+            bool skipCardPileVisuals)
         {
             try
             {
                 if (_isPatching) return;
                 _isPatching = true;
 
-                LogDebug($"Card play starting: {__instance.Title}, Target: {target?.Name}");
+                string targetName = "None";
+                if (target is MegaCrit.Sts2.Core.Entities.Creatures.Creature creature)
+                {
+                    targetName = creature.Name ?? "Unknown";
+                }
+                
+                LogDebug($"Card play starting: {__instance.Id.Entry}, Target: {targetName}, AutoPlay: {isAutoPlay}");
                 
                 // 这里可以添加动作记录逻辑
                 // 后续会在BattleRecorder中实现
@@ -96,14 +107,25 @@ namespace WorldlineTracker.WorldlineTrackerCode.Patches
             }
         }
 
-        private static void OnPlayWrapperPostfix(CardModel __instance, Creature? target)
+        private static void OnPlayWrapperPostfix(CardModel __instance, 
+            object choiceContext, 
+            object? target, 
+            bool isAutoPlay, 
+            object resources, 
+            bool skipCardPileVisuals)
         {
             try
             {
                 if (_isPatching) return;
                 _isPatching = true;
 
-                LogDebug($"Card play completed: {__instance.Title}, Target: {target?.Name}");
+                string targetName = "None";
+                if (target is MegaCrit.Sts2.Core.Entities.Creatures.Creature creature)
+                {
+                    targetName = creature.Name ?? "Unknown";
+                }
+                
+                LogDebug($"Card play completed: {__instance.Id.Entry}, Target: {targetName}, AutoPlay: {isAutoPlay}");
                 
                 // 记录卡牌播放动作
                 RecordCardPlay(__instance, target);
@@ -173,7 +195,7 @@ namespace WorldlineTracker.WorldlineTrackerCode.Patches
         /// <summary>
         /// 记录卡牌播放动作
         /// </summary>
-        private static void RecordCardPlay(CardModel card, Creature? target)
+        private static void RecordCardPlay(CardModel card, object? target)
         {
             try
             {
@@ -184,7 +206,12 @@ namespace WorldlineTracker.WorldlineTrackerCode.Patches
                 }
 
                 string cardId = card.Id.Entry;
-                string targetName = target?.Name ?? "None";
+                string targetName = "None";
+                
+                if (target is MegaCrit.Sts2.Core.Entities.Creatures.Creature creature)
+                {
+                    targetName = creature.Name ?? "Unknown";
+                }
                 
                 BattleRecorder.Instance.RecordCardPlay(cardId, targetName);
                 

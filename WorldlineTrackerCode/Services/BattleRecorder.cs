@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Godot;
 using WorldlineTracker.WorldlineTrackerCode.Models;
 
 namespace WorldlineTracker.WorldlineTrackerCode.Services
@@ -197,7 +199,13 @@ namespace WorldlineTracker.WorldlineTrackerCode.Services
                     Actions = _actions.ToList()
                 };
 
-                string json = JsonConvert.SerializeObject(battleData, Formatting.Indented);
+                var options = new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    Converters = { new JsonStringEnumConverter() }
+                };
+                
+                string json = JsonSerializer.Serialize(battleData, options);
                 string filePath = GetBattleFilePath();
 
                 // 确保目录存在
@@ -230,7 +238,11 @@ namespace WorldlineTracker.WorldlineTrackerCode.Services
                 }
 
                 string json = File.ReadAllText(filePath);
-                var battleData = JsonConvert.DeserializeObject<BattleData>(json);
+                var options = new JsonSerializerOptions
+                {
+                    Converters = { new JsonStringEnumConverter() }
+                };
+                var battleData = JsonSerializer.Deserialize<BattleData>(json, options);
 
                 MainFile.Logger.Info($"Battle data loaded from: {filePath}");
                 return battleData;
@@ -267,9 +279,33 @@ namespace WorldlineTracker.WorldlineTrackerCode.Services
         /// </summary>
         private string GetBattleDirectory()
         {
-            // 在实际Godot环境中，需要使用ProjectSettings.GlobalizePath等
-            // 这里先使用相对路径，后续需要根据Godot API调整
-            return Path.Combine("ModData", "WorldlineTracker", "Battles");
+            try
+            {
+                // 使用Godot API获取用户数据目录
+                string userDataDir = OS.GetUserDataDir();
+                string battleDir = Path.Combine(userDataDir, "ModData", "WorldlineTracker", "Battles");
+                
+                // 确保目录存在
+                if (!Directory.Exists(battleDir))
+                {
+                    Directory.CreateDirectory(battleDir);
+                    MainFile.Logger.Info($"Created battle directory: {battleDir}");
+                }
+                
+                return battleDir;
+            }
+            catch (Exception ex)
+            {
+                MainFile.Logger.Error($"Failed to get battle directory: {ex.Message}");
+                
+                // 降级方案：使用当前目录
+                string fallbackDir = Path.Combine(Directory.GetCurrentDirectory(), "ModData", "WorldlineTracker", "Battles");
+                if (!Directory.Exists(fallbackDir))
+                {
+                    Directory.CreateDirectory(fallbackDir);
+                }
+                return fallbackDir;
+            }
         }
 
         /// <summary>
