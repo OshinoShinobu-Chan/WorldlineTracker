@@ -18,7 +18,8 @@
       "update_todo_before_implementation": true,
       "update_readme_after_completion": true,
       "run_tests_after_changes": true,
-      "commit_changes_after_modifications": true,
+      "ask_for_review_before_commit": true,
+      "commit_changes_after_approval": true,
       "push_to_remote_after_commit": true
     },
     "environment": {
