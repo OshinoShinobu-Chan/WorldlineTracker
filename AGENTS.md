@@ -16,12 +16,13 @@
 
 1. 任何不明确的功能，或者不了解的内容，请总是先尝试搜索网络，然后向用户提问。
 2. 遇到代码中的问题时，请参考[这个网站](https://glitchedreme.github.io/SlayTheSpire2ModdingTutorials/docs/02-install-view-source-and-patch/)中的内容尝试解决。
+3. 向用户提问请使用question工具。
 
 ### 开发流程
 1. 实现新功能前先更新TODO.md
 2. 完成功能后更新README.md中的进度
 3. 每个功能完成后运行相关测试
-4. 每次完成重要修改后，先询问用户的审查意见，再使用git提交改动
+4. 每次完成重要修改后，先询问用户的审查意见，然后给用户提供`git commit`命令，由用户来执行。询问用户的审查意见的时候，请你使用question工具。
 
 ### 环境配置
 1. 项目在Windows环境下开发，使用PowerShell而不是bash。注意PowerShell命令语法与bash的区别
