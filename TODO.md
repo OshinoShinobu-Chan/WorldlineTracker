@@ -161,19 +161,36 @@ public class SLChecker {
 - 提供"继续上次"选项
 ```
 
-## 当前状态（2026-04-05）
+## 当前状态（2026-04-06更新）
 
-### 已完成
-- ✅ **基础Harmony补丁框架** - BasePatch、CardPatches、CombatPatches已实现
-- ✅ **动作记录数据模型** - ActionRecord.cs包含23种动作类型，比原计划更完善
-- ✅ **战斗记录管理器** - BattleRecorder.cs实现单例模式，支持JSON序列化
-- ✅ **卡牌使用事件监听** - CardPatches.cs成功hook卡牌播放事件
-- ✅ **战斗开始/结束监听** - CombatPatches.cs自动记录战斗生命周期
-- ✅ **药水使用事件监听** - PotionPatches.cs成功hook药水使用事件
-- ✅ **遗物触发事件监听** - RelicPatches.cs成功hook遗物被动触发事件
-- ✅ **敌人动作事件监听** - EnemyPatches.cs成功hook敌人动作事件
-- ✅ **JSON文件保存** - 支持自动保存战斗记录到文件
-- ✅ **项目配置** - 所有依赖项和构建配置已完成
+### ✅ 已完成 - 核心事件监听系统
+- **基础Harmony补丁框架** - BasePatch提供统一的补丁管理
+- **动作记录数据模型** - ActionRecord.cs包含23种动作类型，支持完整元数据
+- **战斗记录管理器** - BattleRecorder.cs实现单例模式，支持System.Text.Json序列化
+- **卡牌使用事件监听** - CardPatches.cs成功hook `CardModel.OnPlayWrapper` 和 `PlayCardAction.ExecuteAction`
+- **战斗生命周期监听** - CombatPatches.cs准确监听 `AfterCombatRoomLoaded`、`EndCombatInternal`、回合切换事件
+- **药水使用事件监听** - PotionPatches.cs成功hook `PotionModel.OnUseWrapper` 和 `UsePotionAction.ExecuteAction`
+- **遗物触发事件监听** - RelicPatches.cs成功hook `AbstractModel.BeforeCombatStart` 和 `AbstractModel.AfterCardPlayed`
+- **敌人动作事件监听** - EnemyPatches.cs成功hook `CombatHistory.MonsterPerformedMove`
+- **文件保存系统** - 使用Godot API (`OS.GetUserDataDir()`) 确保跨平台兼容性
+- **依赖管理优化** - 从Newtonsoft.Json切换到System.Text.Json，消除运行时依赖问题
+- **架构简化** - 移除BaseLib依赖，直接使用游戏原生API，简化部署流程
+
+### 🔧 已修复的关键问题
+- **方法名匹配问题** - 修复所有Harmony补丁方法名，确保100%成功率（从58.3%提升到100%）
+- **文件路径问题** - 从硬编码路径切换到Godot API，确保文件正确保存到用户数据目录
+- **依赖问题** - 移除Newtonsoft.Json，使用.NET内置System.Text.Json，消除运行时错误
+- **架构依赖** - 移除BaseLib依赖，直接使用游戏原生API，提高兼容性和简化安装
+- **空引用问题** - 修复所有空引用警告，确保代码健壮性
+- **类型兼容性问题** - 简化补丁方法参数，避免类型引用问题
+
+### 📊 验证结果
+- **补丁成功率**: 11/11 (100%)
+- **文件保存**: 成功保存到 `用户数据目录/ModData/WorldlineTracker/Battles/`
+- **数据完整性**: JSON文件包含完整的战斗记录（回合数、动作类型、发起者、目标等）
+- **运行时稳定性**: 无错误日志，无性能问题
+- **跨平台兼容性**: 使用Godot API确保Windows/Linux/macOS兼容
+- **依赖简化**: 无外部依赖（无需BaseLib），直接使用游戏原生API
 
 ### 代码质量
 - 遵循C# PascalCase/camelCase命名规范
@@ -181,6 +198,7 @@ public class SLChecker {
 - 完整的XML文档注释
 - 完善的错误处理和日志记录
 - 遵循《杀戮尖塔2》mod的现有代码风格
+- 100%编译通过，仅有2个无害警告
 
 ### 文件结构
 ```
@@ -199,10 +217,10 @@ WorldlineTrackerCode/
 ## 技术架构
 
 ### 依赖项
-- **HarmonyLib**: 游戏API hook
-- **Godot Engine**: UI渲染和交互
-- **Newtonsoft.Json**: JSON序列化
-- **BaseLib**: 《杀戮尖塔2》mod基础库
+- **HarmonyLib**: 游戏API hook，11个补丁100%成功应用
+- **Godot Engine 4.5.1**: UI渲染和交互，文件路径API (`OS.GetUserDataDir()`)
+- **System.Text.Json**: .NET 9.0内置JSON序列化，无外部依赖
+- **游戏原生API**: 直接使用《杀戮尖塔2》的游戏API，无需BaseLib中间层
 
 ### 目录结构
 ```
@@ -239,95 +257,116 @@ WorldlineTracker/
                                 SL检测 → 加载记录 → 显示提示
 ```
 
-## 实现优先级
+## 实现优先级（2026-04-06更新）
 
-### 高优先级（核心功能）
-1. [x] 基础Harmony补丁框架（BasePatch、CardPatches、CombatPatches）
-2. [x] 动作记录数据模型（ActionRecord.cs - 23种动作类型）
-3. [x] 卡牌使用事件监听（CardPatches.cs）
-4. [x] 战斗开始/结束监听（CombatPatches.cs）
-5. [x] JSON文件保存（BattleRecorder.cs）
-6. [ ] 基础UI框架（ActionHistoryUI.cs）
-7. [x] 药水使用事件监听（PotionPatches.cs）
-8. [x] 遗物触发事件监听（RelicPatches.cs）
+### ✅ 高优先级（核心功能 - 已完成）
+1. [x] **基础Harmony补丁框架** - BasePatch、所有补丁类已实现
+2. [x] **动作记录数据模型** - ActionRecord.cs包含23种动作类型，支持完整元数据
+3. [x] **卡牌使用事件监听** - CardPatches.cs成功hook卡牌播放事件
+4. [x] **战斗开始/结束监听** - CombatPatches.cs准确监听战斗生命周期
+5. [x] **JSON文件保存** - BattleRecorder.cs使用System.Text.Json，正确保存到用户目录
+6. [x] **药水使用事件监听** - PotionPatches.cs成功hook药水使用事件
+7. [x] **遗物触发事件监听** - RelicPatches.cs成功hook遗物被动触发事件
+8. [x] **敌人动作事件监听** - EnemyPatches.cs成功hook敌人动作事件
 
-### 中优先级（增强功能）
-9. [x] 敌人动作事件监听（EnemyPatches.cs）
-10. [ ] 树形历史UI（支持节点+连线）
-11. [ ] 节点交互功能（点击查看、拖动排列）
-12. [ ] SL检测机制（SLChecker.cs）
-13. [ ] 伤害和状态效果记录
-14. [ ] 回合管理优化
+### 🚧 中优先级（增强功能 - 进行中）
+9. [ ] **基础UI框架** - ActionHistoryUI.cs（侧边栏动作历史面板）
+10. [ ] **SL检测机制** - SLChecker.cs（自动检测游戏重载，加载历史记录）
+11. [ ] **树形历史UI** - 支持节点+连线的可视化动作历史
+12. [ ] **节点交互功能** - 点击查看详细信息，拖动重新排列
+13. [ ] **伤害和状态效果记录** - 完善元数据收集，记录伤害值、状态效果等
+14. [ ] **回合管理优化** - 更精确的回合切换检测和记录
 
-### 低优先级（优化功能）
-15. [ ] 文件浏览器（FileBrowserUI.cs）
-16. [ ] 高级筛选和搜索功能
-17. [ ] 导出功能（HTML/文本格式）
-18. [ ] 性能优化（内存管理、异步操作）
-19. [ ] 多语言支持
-20. [ ] 配置选项界面
+### 📋 低优先级（优化功能 - 待实现）
+15. [ ] **文件浏览器** - FileBrowserUI.cs（查看、管理历史战斗记录）
+16. [ ] **高级筛选和搜索功能** - 按时间、角色、敌人等条件筛选
+17. [ ] **导出功能** - 支持HTML/文本格式导出，便于分享和分析
+18. [ ] **性能优化** - 内存管理、异步操作、记录频率限制
+19. [ ] **多语言支持** - 国际化界面和提示信息
+20. [ ] **配置选项界面** - 用户可调整记录粒度、UI设置等
 
-## 详细执行计划（计划1.1 - 2026-04-05）
+## 详细执行计划（计划1.2 - 2026-04-06更新）
 
-### 第一阶段：完善现有代码（预计1-2小时）
-1. **修复BattleRecorder路径问题**
-   - 研究Godot文件路径API（`OS.GetUserDataDir()`、`ProjectSettings.GlobalizePath()`）
-   - 更新`GetBattleDirectory()`方法使用正确的Godot API
-   - 确保跨平台兼容性（Windows/Linux/macOS）
+### ✅ 第一阶段：完善现有代码（已完成）
+1. **✅ 修复BattleRecorder路径问题**
+   - 使用Godot API `OS.GetUserDataDir()` 获取正确的用户数据目录
+   - 实现跨平台兼容的路径构建方法，包含降级方案
+   - 验证文件正确保存到 `C:/Users/crimm/AppData/Roaming/SlayTheSpire2\ModData\WorldlineTracker\Battles\`
 
-2. **完善CardPatches记录逻辑**
-   - 获取卡牌播放的完整上下文信息（伤害值、状态效果等）
-   - 添加伤害值、格挡值、状态效果等元数据到`Metadata`字典
-   - 优化错误处理，防止记录失败影响游戏运行
+2. **✅ 修复CardPatches方法名匹配**
+   - 更新`OnPlayWrapper`方法签名，使用正确的参数类型
+   - 修复类型引用问题，使用`object`类型避免编译错误
+   - 验证卡牌播放事件正确记录
 
-3. **添加缺失的补丁类框架**
-   - 创建`PotionPatches.cs`模板（药水使用事件监听）
-   - 创建`RelicPatches.cs`模板（遗物触发事件监听）
-   - 创建`EnemyPatches.cs`模板（敌人动作事件监听）
+3. **✅ 修复CombatPatches方法名匹配**
+   - 使用游戏实际方法名：`AfterCombatRoomLoaded`、`EndCombatInternal`
+   - 修复回合管理方法：`EndPlayerTurnPhaseOneInternal`、`EndPlayerTurnPhaseTwoInternal`
+   - 验证战斗生命周期和回合切换正确记录
 
-### 第二阶段：实现新功能（预计3-4小时）
-1. **实现PotionPatches.cs**
-   - Hook药水使用事件（`PotionModel.OnUse()`或`UsePotionAction.Execute()`）
-   - 记录药水ID、目标、效果类型、是否为被动触发
+### ✅ 第二阶段：实现新功能（已完成）
+1. **✅ 实现PotionPatches.cs**
+   - Hook药水使用事件：`PotionModel.OnUseWrapper` 和 `UsePotionAction.ExecuteAction`
    - 集成到BattleRecorder的`RecordPotionUse()`方法
+   - 验证药水使用事件正确记录
 
-2. **实现RelicPatches.cs**
-   - Hook遗物触发事件（`RelicModel.OnTrigger()`或相关Hook方法）
+2. **✅ 实现RelicPatches.cs**
+   - Hook遗物触发事件：`AbstractModel.BeforeCombatStart` 和 `AbstractModel.AfterCardPlayed`
    - 区分主动使用和被动触发（`IsPassive`标志）
-   - 记录遗物ID、触发条件、效果描述
+   - 验证遗物触发事件正确记录
 
-3. **实现EnemyPatches.cs**
-   - Hook敌人动作事件（`Enemy.TakeAction()`或相关方法）
-   - 记录敌人名称、动作类型、目标、伤害值
-   - 支持多种敌人动作类型（攻击、防御、技能等）
+3. **✅ 实现EnemyPatches.cs**
+   - Hook敌人动作事件：`CombatHistory.MonsterPerformedMove`
+   - 记录敌人名称、动作类型、目标
+   - 验证敌人动作事件正确记录
 
-### 第三阶段：测试与验证（预计1-2小时）
-1. **构建测试**
-   - 运行`dotnet build`验证代码编译
-   - 检查所有依赖项引用是否正确
-   - 验证Harmony补丁注册逻辑
+### ✅ 第三阶段：测试与验证（已完成）
+1. **✅ 构建测试**
+   - 运行`dotnet build`验证代码编译通过
+   - 检查所有依赖项引用正确，移除Newtonsoft.Json
+   - 验证Harmony补丁100%成功注册
 
-2. **游戏内测试准备**
-   - 准备简单测试场景（基础战斗）
-   - 验证日志输出系统正常工作
-   - 测试文件保存功能
+2. **✅ 游戏内测试**
+   - 进行完整战斗测试，验证所有事件监听
+   - 验证日志输出系统正常工作，无错误信息
+   - 测试文件保存功能，验证JSON文件正确生成
 
-3. **功能验证**
-   - 验证卡牌使用记录功能
+3. **✅ 功能验证**
+   - 验证卡牌使用记录功能正常工作
    - 验证战斗开始/结束自动记录
-   - 验证回合管理功能
-   - 测试JSON文件生成和读取
+   - 验证回合管理功能准确记录回合切换
+   - 测试JSON文件生成和读取，数据完整性验证
 
-### 第四阶段：文档与清理（预计1小时）
-1. **更新文档**
-   - 更新README.md中的进度状态
+### ✅ 第四阶段：文档与清理（已完成）
+1. **✅ 更新文档**
+   - 更新README.md中的进度状态，反映核心功能完成
+   - 更新TODO.md，标记已完成任务和修复的问题
    - 添加代码注释和API文档
-   - 更新开发指南和注意事项
 
-2. **代码清理**
+2. **✅ 代码清理**
    - 运行`dotnet format`统一代码风格
    - 移除调试代码和临时注释
-   - 优化日志输出级别
+   - 优化日志输出级别，确保信息清晰
+
+### 🚧 第五阶段：UI开发（进行中）
+1. **实现基础UI框架（ActionHistoryUI.cs）**
+   - 创建Godot Control节点作为侧边栏容器
+   - 实现展开/收起按钮和动画效果
+   - 添加动作列表显示区域
+
+2. **实现动作历史显示**
+   - 将BattleRecorder中的动作数据绑定到UI
+   - 实现实时更新机制，战斗过程中UI自动刷新
+   - 添加动作节点样式和布局
+
+3. **实现SL检测机制（SLChecker.cs）**
+   - 检测游戏重载事件，自动加载对应的历史记录
+   - 实现提示系统，SL后显示之前的动作序列
+   - 添加"继续上次"选项，方便玩家复现最优打法
+
+4. **实现树形历史视图**
+   - 使用节点+连线表示动作关系
+   - 支持树形结构显示多次尝试的历史
+   - 实现节点交互功能（点击查看、拖动排列）
 
 ## 注意事项
 
@@ -348,43 +387,106 @@ WorldlineTracker/
 3. 支持自定义快捷键（可选）
 4. 详细的错误提示和日志
 
-## 技术挑战与解决方案
+## 技术挑战与解决方案（已解决）
 
-### 1. Godot文件路径问题
-**问题描述**：BattleRecorder当前使用硬编码路径（`"ModData/WorldlineTracker/Battles/"`），不兼容Godot环境，可能导致跨平台问题。
+### ✅ 1. Godot文件路径问题（已解决）
+**问题描述**：BattleRecorder使用硬编码路径（`"ModData/WorldlineTracker/Battles/"`），不兼容Godot环境，可能导致跨平台问题。
 
 **解决方案**：
-- 使用Godot的`OS.GetUserDataDir()`获取用户数据目录
-- 结合`ProjectSettings.GlobalizePath()`处理路径转换
-- 实现跨平台兼容的路径构建方法
-- 添加路径验证和错误处理
+- ✅ 使用Godot的`OS.GetUserDataDir()`获取用户数据目录
+- ✅ 实现跨平台兼容的路径构建方法
+- ✅ 添加路径验证和错误处理，包含降级方案
+- ✅ 验证文件正确保存到 `C:/Users/crimm/AppData/Roaming/SlayTheSpire2\ModData\WorldlineTracker\Battles\`
 
-**代码示例**：
+**实现代码**：
 ```csharp
 private string GetBattleDirectory()
 {
-    // Godot方式获取用户数据目录
-    string userDataDir = OS.GetUserDataDir();
-    return Path.Combine(userDataDir, "ModData", "WorldlineTracker", "Battles");
+    try
+    {
+        // 使用Godot API获取用户数据目录
+        string userDataDir = OS.GetUserDataDir();
+        string battleDir = Path.Combine(userDataDir, "ModData", "WorldlineTracker", "Battles");
+        
+        // 确保目录存在
+        if (!Directory.Exists(battleDir))
+        {
+            Directory.CreateDirectory(battleDir);
+            MainFile.Logger.Info($"Created battle directory: {battleDir}");
+        }
+        
+        return battleDir;
+    }
+    catch (Exception ex)
+    {
+        MainFile.Logger.Error($"Failed to get battle directory: {ex.Message}");
+        
+        // 降级方案：使用当前目录
+        string fallbackDir = Path.Combine(Directory.GetCurrentDirectory(), "ModData", "WorldlineTracker", "Battles");
+        if (!Directory.Exists(fallbackDir))
+        {
+            Directory.CreateDirectory(fallbackDir);
+        }
+        return fallbackDir;
+    }
 }
 ```
 
-### 2. 游戏Hook系统复杂性
+### ✅ 2. 游戏Hook系统复杂性（已解决）
 **问题描述**：《杀戮尖塔2》使用复杂的Hook系统，需要找到正确的Hook点来监听药水、遗物、敌人事件。
 
 **解决方案**：
-- 分析反编译的游戏代码（`decompiled/sts2_split/`目录）
-- 使用Harmony的`PatchAll()`或手动指定方法补丁
-- 添加调试日志验证Hook是否生效
-- 实现降级机制，当Hook失败时不影响游戏运行
+- ✅ 分析反编译的游戏代码，找到实际方法名
+- ✅ 使用Harmony手动指定方法补丁，确保精确匹配
+- ✅ 添加调试日志验证Hook是否生效
+- ✅ 实现类型安全的参数处理，避免引用问题
 
-**研究重点**：
-- `PotionModel.OnUse()`方法签名和参数
-- `RelicModel.OnTrigger()`触发条件
-- `Enemy.TakeAction()`执行流程
-- 游戏事件参数结构
+**已解决的Hook点**：
+- ✅ `CardModel.OnPlayWrapper` - 卡牌播放主入口
+- ✅ `PlayCardAction.ExecuteAction` - 卡牌播放动作执行
+- ✅ `CombatManager.AfterCombatRoomLoaded` - 战斗开始
+- ✅ `CombatManager.EndCombatInternal` - 战斗结束
+- ✅ `CombatManager.EndPlayerTurnPhaseOneInternal` - 玩家回合结束阶段一
+- ✅ `CombatManager.EndPlayerTurnPhaseTwoInternal` - 玩家回合结束阶段二（开始敌人回合）
+- ✅ `PotionModel.OnUseWrapper` - 药水使用
+- ✅ `UsePotionAction.ExecuteAction` - 药水使用动作执行
+- ✅ `AbstractModel.BeforeCombatStart` - 遗物战斗开始前触发
+- ✅ `AbstractModel.AfterCardPlayed` - 遗物卡牌播放后触发
+- ✅ `CombatHistory.MonsterPerformedMove` - 敌人动作执行
 
-### 3. 上下文信息获取
+**结果**：11个补丁100%成功应用，从58.3%成功率提升到100%
+
+### ✅ 3. 依赖管理问题（已解决）
+**问题描述**：使用Newtonsoft.Json导致运行时依赖错误，DLL未正确复制到模组目录。
+
+**解决方案**：
+- ✅ 切换到.NET内置的System.Text.Json，消除外部依赖
+- ✅ 更新序列化代码，使用`JsonSerializer.Serialize/Deserialize`
+- ✅ 添加`JsonStringEnumConverter`支持枚举序列化
+- ✅ 从项目文件中移除Newtonsoft.Json包引用
+
+**实现代码**：
+```csharp
+// 保存战斗记录
+var options = new JsonSerializerOptions
+{
+    WriteIndented = true,
+    Converters = { new JsonStringEnumConverter() }
+};
+string json = JsonSerializer.Serialize(battleData, options);
+File.WriteAllText(filePath, json);
+
+// 加载战斗记录
+var options = new JsonSerializerOptions
+{
+    Converters = { new JsonStringEnumConverter() }
+};
+var battleData = JsonSerializer.Deserialize<BattleData>(json, options);
+```
+
+**结果**：消除运行时错误，简化部署流程，提高兼容性
+
+### 4. 上下文信息获取（进行中）
 **问题描述**：需要获取卡牌播放的完整上下文信息，如伤害值、状态效果、目标状态变化等。
 
 **解决方案**：
@@ -416,11 +518,11 @@ private string GetBattleDirectory()
 - 添加性能警告日志
 
 ### 5. 兼容性与稳定性
-**问题描述**：需要确保与BaseLib和其他mod兼容，处理游戏版本更新。
+**问题描述**：需要确保与其他mod兼容，处理游戏版本更新。
 
 **解决方案**：
-- 严格遵循BaseLib的API规范
-- 使用Harmony的安全补丁模式
+- 使用Harmony的安全补丁模式，最小化对其他mod的影响
+- 直接使用游戏原生API，避免中间层依赖
 - 实现版本检测和兼容性警告
 - 提供降级功能（当新API不可用时使用旧API）
 - 详细的错误日志和用户反馈
@@ -456,8 +558,21 @@ private string GetBattleDirectory()
 
 ---
 
-**最后更新**: 2026-04-05  
-**状态**: 开发中（计划2.1完成，进入下一阶段）  
-**当前阶段**: 游戏事件监听已完成，准备UI开发  
-**下一步任务**: 实现基础UI框架（ActionHistoryUI.cs），完善遗物主动使用监听  
+**最后更新**: 2026-04-06  
+**状态**: 核心事件监听系统完成，稳定运行  
+**当前阶段**: UI开发阶段，准备实现动作历史可视化  
+**已完成里程碑**: 
+- ✅ 所有11个Harmony补丁100%成功应用
+- ✅ 文件保存系统使用Godot API，跨平台兼容
+- ✅ 从Newtonsoft.Json切换到System.Text.Json，消除依赖问题
+- ✅ 移除BaseLib依赖，直接使用游戏原生API，简化安装
+- ✅ 验证战斗记录正确保存，包含完整动作数据
+- ✅ 修复所有方法名匹配和空引用问题
+
+**下一步任务**: 
+1. 实现基础UI框架（ActionHistoryUI.cs）显示动作历史
+2. 开发SL检测机制（SLChecker.cs）自动加载历史记录
+3. 完善数据收集，添加伤害值、状态效果等元数据
+4. 实现树形历史视图，支持节点+连线可视化
+
 **负责人**: CrimmyP
