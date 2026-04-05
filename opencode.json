@@ -7,6 +7,9 @@
       "git commit *": "deny",
       "git push *": "deny",
       "grep *": "allow"
+    },
+    "external_directory": {
+      "E:/slay_the_spire_mod/**": "allow"
     }
   }
 }
