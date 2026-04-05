@@ -26,29 +26,7 @@
 2. 注意PowerShell命令语法与bash的区别
 3. 使用`dir`代替`ls`，使用PowerShell兼容的命令
 
-## 构建和测试命令
 
-### 构建命令
-```bash
-dotnet build
-```
-
-### 测试命令
-```bash
-# 需要先确认项目的测试框架
-# 如果是NUnit：
-dotnet test
-# 如果是xUnit：
-dotnet test
-```
-
-### 代码质量检查
-```bash
-# 代码格式化（如果配置了）
-dotnet format
-# 静态分析（如果配置了）
-dotnet analyze
-```
 
 ## 项目特定偏好
 
