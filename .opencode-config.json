@@ -1,0 +1,44 @@
+{
+  "project_rules": {
+    "code_style": {
+      "csharp_naming": {
+        "classes": "PascalCase",
+        "methods": "PascalCase", 
+        "variables": "camelCase",
+        "constants": "UPPER_SNAKE_CASE"
+      },
+      "indentation": "4 spaces",
+      "no_tabs": true
+    },
+    "documentation": {
+      "no_emojis": true,
+      "prefer_text_descriptions": true
+    },
+    "workflow": {
+      "update_todo_before_implementation": true,
+      "update_readme_after_completion": true,
+      "run_tests_after_changes": true,
+      "commit_changes_after_modifications": true,
+      "push_to_remote_after_commit": true
+    },
+    "environment": {
+      "os": "windows",
+      "shell": "powershell",
+      "use_powershell_commands": true,
+      "dir_instead_of_ls": true
+    }
+  },
+  "build_commands": {
+    "build": "dotnet build",
+    "test": "dotnet test",
+    "format": "dotnet format",
+    "analyze": "dotnet analyze"
+  },
+  "project_structure": {
+    "source_dir": "WorldlineTrackerCode",
+    "models_dir": "WorldlineTrackerCode/Models",
+    "services_dir": "WorldlineTrackerCode/Services",
+    "ui_dir": "WorldlineTrackerCode/UI",
+    "patches_dir": "WorldlineTrackerCode/Patches"
+  }
+}
