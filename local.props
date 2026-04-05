@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <SteamLibraryPath>E:/SteamLibrary/steamapps</SteamLibraryPath>
+    <Sts2Path>$(SteamLibraryPath)/common/Slay the Spire 2</Sts2Path>
+    <ModsPath>$(Sts2Path)/mods/</ModsPath>
+    <Sts2DataDir>$(Sts2Path)/data_sts2_windows_x86_64</Sts2DataDir>
+  </PropertyGroup>
+</Project>
