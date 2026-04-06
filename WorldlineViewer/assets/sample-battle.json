@@ -1,0 +1,241 @@
+{
+  "battleId": "battle_123456",
+  "startTime": "2026-04-06T10:30:00",
+  "endTime": "2026-04-06T10:35:00",
+  "totalTurns": 3,
+  "actions": [
+    {
+      "turnNumber": 1,
+      "timestamp": "2026-04-06T10:30:05",
+      "type": "StartTurn",
+      "initiator": "System",
+      "target": "",
+      "cardId": "",
+      "potionId": "",
+      "relicId": "",
+      "isPassive": false,
+      "damageAmount": 0,
+      "blockAmount": 0,
+      "metadata": {}
+    },
+    {
+      "turnNumber": 1,
+      "timestamp": "2026-04-06T10:30:10",
+      "type": "PlayCard",
+      "initiator": "Player",
+      "target": "Cultist",
+      "cardId": "Strike",
+      "potionId": "",
+      "relicId": "",
+      "isPassive": false,
+      "damageAmount": 6,
+      "blockAmount": 0,
+      "metadata": {
+        "energyCost": 1,
+        "cardName": "打击"
+      }
+    },
+    {
+      "turnNumber": 1,
+      "timestamp": "2026-04-06T10:30:15",
+      "type": "DamageDealt",
+      "initiator": "Player",
+      "target": "Cultist",
+      "cardId": "",
+      "potionId": "",
+      "relicId": "",
+      "isPassive": false,
+      "damageAmount": 6,
+      "blockAmount": 0,
+      "metadata": {
+        "source": "Strike"
+      }
+    },
+    {
+      "turnNumber": 1,
+      "timestamp": "2026-04-06T10:30:20",
+      "type": "EnemyAction",
+      "initiator": "Cultist",
+      "target": "Player",
+      "cardId": "",
+      "potionId": "",
+      "relicId": "",
+      "isPassive": false,
+      "damageAmount": 8,
+      "blockAmount": 0,
+      "metadata": {
+        "action": "Dark Strike"
+      }
+    },
+    {
+      "turnNumber": 1,
+      "timestamp": "2026-04-06T10:30:25",
+      "type": "EndTurn",
+      "initiator": "System",
+      "target": "",
+      "cardId": "",
+      "potionId": "",
+      "relicId": "",
+      "isPassive": false,
+      "damageAmount": 0,
+      "blockAmount": 0,
+      "metadata": {}
+    },
+    {
+      "turnNumber": 2,
+      "timestamp": "2026-04-06T10:30:30",
+      "type": "StartTurn",
+      "initiator": "System",
+      "target": "",
+      "cardId": "",
+      "potionId": "",
+      "relicId": "",
+      "isPassive": false,
+      "damageAmount": 0,
+      "blockAmount": 0,
+      "metadata": {}
+    },
+    {
+      "turnNumber": 2,
+      "timestamp": "2026-04-06T10:30:35",
+      "type": "PlayCard",
+      "initiator": "Player",
+      "target": "Cultist",
+      "cardId": "Defend",
+      "potionId": "",
+      "relicId": "",
+      "isPassive": false,
+      "damageAmount": 0,
+      "blockAmount": 5,
+      "metadata": {
+        "energyCost": 1,
+        "cardName": "防御"
+      }
+    },
+    {
+      "turnNumber": 2,
+      "timestamp": "2026-04-06T10:30:40",
+      "type": "BlockGained",
+      "initiator": "Player",
+      "target": "Player",
+      "cardId": "",
+      "potionId": "",
+      "relicId": "",
+      "isPassive": false,
+      "damageAmount": 0,
+      "blockAmount": 5,
+      "metadata": {
+        "source": "Defend"
+      }
+    },
+    {
+      "turnNumber": 2,
+      "timestamp": "2026-04-06T10:30:45",
+      "type": "UsePotion",
+      "initiator": "Player",
+      "target": "Player",
+      "cardId": "",
+      "potionId": "StrengthPotion",
+      "relicId": "",
+      "isPassive": false,
+      "damageAmount": 0,
+      "blockAmount": 0,
+      "metadata": {
+        "effect": "+2 Strength"
+      }
+    },
+    {
+      "turnNumber": 2,
+      "timestamp": "2026-04-06T10:30:50",
+      "type": "RelicTrigger",
+      "initiator": "Player",
+      "target": "Cultist",
+      "cardId": "",
+      "potionId": "",
+      "relicId": "Shuriken",
+      "isPassive": true,
+      "damageAmount": 3,
+      "blockAmount": 0,
+      "metadata": {
+        "triggerCondition": "After playing 3 attacks"
+      }
+    },
+    {
+      "turnNumber": 2,
+      "timestamp": "2026-04-06T10:30:55",
+      "type": "EndTurn",
+      "initiator": "System",
+      "target": "",
+      "cardId": "",
+      "potionId": "",
+      "relicId": "",
+      "isPassive": false,
+      "damageAmount": 0,
+      "blockAmount": 0,
+      "metadata": {}
+    },
+    {
+      "turnNumber": 3,
+      "timestamp": "2026-04-06T10:31:00",
+      "type": "StartTurn",
+      "initiator": "System",
+      "target": "",
+      "cardId": "",
+      "potionId": "",
+      "relicId": "",
+      "isPassive": false,
+      "damageAmount": 0,
+      "blockAmount": 0,
+      "metadata": {}
+    },
+    {
+      "turnNumber": 3,
+      "timestamp": "2026-04-06T10:31:05",
+      "type": "PlayCard",
+      "initiator": "Player",
+      "target": "Cultist",
+      "cardId": "Strike",
+      "potionId": "",
+      "relicId": "",
+      "isPassive": false,
+      "damageAmount": 8,
+      "blockAmount": 0,
+      "metadata": {
+        "energyCost": 1,
+        "cardName": "打击",
+        "strengthBonus": 2
+      }
+    },
+    {
+      "turnNumber": 3,
+      "timestamp": "2026-04-06T10:31:10",
+      "type": "DamageDealt",
+      "initiator": "Player",
+      "target": "Cultist",
+      "cardId": "",
+      "potionId": "",
+      "relicId": "",
+      "isPassive": false,
+      "damageAmount": 8,
+      "blockAmount": 0,
+      "metadata": {
+        "source": "Strike",
+        "isFatal": true
+      }
+    },
+    {
+      "turnNumber": 3,
+      "timestamp": "2026-04-06T10:31:15",
+      "type": "EndTurn",
+      "initiator": "System",
+      "target": "",
+      "cardId": "",
+      "potionId": "",
+      "relicId": "",
+      "isPassive": false,
+      "damageAmount": 0,
+      "blockAmount": 0,
+      "metadata": {}
+    }
+  ]
+}
