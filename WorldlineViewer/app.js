@@ -1,6 +1,6 @@
 // WorldlineViewer 主应用脚本
 
-const { createApp, ref, computed, onMounted, nextTick } = Vue;
+const { createApp, ref, computed, onMounted, nextTick, watch } = Vue;
 
 // 动作类型到中文的映射
 const ACTION_TYPE_MAP = {
@@ -44,7 +44,7 @@ const ACTION_COLOR_MAP = {
 
 // 节点类
 class Node {
-    constructor(id, originalData, index, total) {
+    constructor(id, originalData, index, total, radius = 30) {
         this.id = id;
         this.originalData = originalData;
         this.index = index;
@@ -55,7 +55,7 @@ class Node {
         this.y = 0;
         
         // 节点属性
-        this.radius = 30;
+        this.radius = radius;
         this.color = ACTION_COLOR_MAP[originalData.type] || '#795548';
         this.isDragging = false;
         this.isSelected = false;
@@ -225,10 +225,11 @@ class CanvasRenderer {
         const zoomFactor = 1.1;
         const oldScale = this.scale;
         
+        // 反转缩放逻辑：向上滚动放大，向下滚动缩小
         if (delta > 0) {
-            this.scale *= zoomFactor;
+            this.scale /= zoomFactor;  // 向下滚动，缩小
         } else {
-            this.scale /= zoomFactor;
+            this.scale *= zoomFactor;  // 向上滚动，放大
         }
         
         // 限制缩放范围
@@ -511,7 +512,8 @@ createApp({
                     `node_${index}`,
                     action,
                     index,
-                    data.actions.length
+                    data.actions.length,
+                    nodeSize.value
                 );
                 nodes.push(node);
                 
@@ -697,6 +699,18 @@ createApp({
                 });
         };
         
+        const updateNodeSizes = () => {
+            if (!nodes.length || !renderer) return;
+            
+            // 更新所有节点的半径
+            nodes.forEach(node => {
+                node.radius = nodeSize.value;
+            });
+            
+            // 重新渲染
+            renderer.render();
+        };
+        
         // 数据标准化函数
         const normalizeDataFormat = (data) => {
             // 如果已经是camelCase格式，直接返回
@@ -732,6 +746,11 @@ createApp({
             
             return normalized;
         };
+        
+        // 观察nodeSize变化
+        watch(nodeSize, () => {
+            updateNodeSizes();
+        });
         
         // 生命周期钩子
         onMounted(() => {
@@ -788,7 +807,8 @@ createApp({
             onCanvasWheel,
             resetLayout,
             clearData,
-            copyNodeDetails
+            copyNodeDetails,
+            updateNodeSizes
         };
     }
 }).mount('#app');

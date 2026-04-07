@@ -1,0 +1,78 @@
+{
+  "battleId": "test_battle_001",
+  "startTime": "2024-01-01T10:00:00Z",
+  "endTime": "2024-01-01T10:05:00Z",
+  "totalTurns": 3,
+  "actions": [
+    {
+      "turnNumber": 1,
+      "timestamp": "2024-01-01T10:00:10Z",
+      "type": "StartTurn",
+      "initiator": "Player",
+      "target": null,
+      "cardId": null,
+      "potionId": null,
+      "relicId": null,
+      "isPassive": false,
+      "damageAmount": 0,
+      "blockAmount": 0,
+      "metadata": {}
+    },
+    {
+      "turnNumber": 1,
+      "timestamp": "2024-01-01T10:00:20Z",
+      "type": "PlayCard",
+      "initiator": "Player",
+      "target": "Enemy1",
+      "cardId": "Strike",
+      "potionId": null,
+      "relicId": null,
+      "isPassive": false,
+      "damageAmount": 6,
+      "blockAmount": 0,
+      "metadata": {}
+    },
+    {
+      "turnNumber": 1,
+      "timestamp": "2024-01-01T10:00:30Z",
+      "type": "EnemyAction",
+      "initiator": "Enemy1",
+      "target": "Player",
+      "cardId": null,
+      "potionId": null,
+      "relicId": null,
+      "isPassive": false,
+      "damageAmount": 8,
+      "blockAmount": 0,
+      "metadata": {}
+    },
+    {
+      "turnNumber": 2,
+      "timestamp": "2024-01-01T10:01:00Z",
+      "type": "StartTurn",
+      "initiator": "Player",
+      "target": null,
+      "cardId": null,
+      "potionId": null,
+      "relicId": null,
+      "isPassive": false,
+      "damageAmount": 0,
+      "blockAmount": 0,
+      "metadata": {}
+    },
+    {
+      "turnNumber": 2,
+      "timestamp": "2024-01-01T10:01:10Z",
+      "type": "PlayCard",
+      "initiator": "Player",
+      "target": "Enemy1",
+      "cardId": "Defend",
+      "potionId": null,
+      "relicId": null,
+      "isPassive": false,
+      "damageAmount": 0,
+      "blockAmount": 5,
+      "metadata": {}
+    }
+  ]
+}
